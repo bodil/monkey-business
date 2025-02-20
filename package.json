@@ -1,6 +1,6 @@
 {
     "name": "@bodil/monkey-business",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Let's give JS core types a polish",
     "repository": {
         "type": "git",
