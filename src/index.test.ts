@@ -114,3 +114,13 @@ test("Iterator.takeOne", () => {
     expect(iter.takeOne()).isSome(3);
     expect(iter.takeOne()).isNone();
 });
+
+test("Array methods are non-enumerable", () => {
+    const array = [1, 2, 3, 4, 5];
+    const keys: Array<any> = [];
+    // eslint-disable-next-line @typescript-eslint/no-for-in-array, guard-for-in
+    for (const key in array) {
+        keys.push(key);
+    }
+    expect(keys).deep.equal(["0", "1", "2", "3", "4"]);
+});

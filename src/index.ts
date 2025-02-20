@@ -184,59 +184,97 @@ Map.prototype.getOrSet = function getOrSet<K, V>(
 
 // Array
 
-Array.prototype.remove = function remove<T>(this: Array<T>, value: T): Option<T> {
-    return this.removeIndex(this.indexOf(value));
-};
-
-Array.prototype.removeFn = function remove<T>(
-    this: Array<T>,
-    predicate: (value: T, index: number, obj: Array<T>) => boolean
-): Option<T> {
-    return this.removeIndex(this.findIndex(predicate as () => boolean));
-};
-
-Array.prototype.removeIndex = function remove<T>(this: Array<T>, index: number): Option<T> {
-    if (!Number.isInteger(index)) {
-        throw new TypeError(`Array.removeIndex(): index ${index} is not an integer`);
-    }
-    if (index < 0 || index >= this.length) {
-        return None;
-    }
-    const removed = this.splice(index, 1).pop();
-    return Option.from(removed);
-};
-
-Array.prototype.insert = function insert<T>(this: Array<T>, value: T, index: number): Array<T> {
-    if (!Number.isInteger(index)) {
-        throw new TypeError(`Array.insert(): index ${index} is not an integer`);
-    }
-    if (index > this.length || index < 0) {
-        throw new RangeError(`Array.insert: index ${index} out of bounds`);
-    }
-    this.splice(index, 0, value);
-    return this;
-};
-
-Array.prototype.insertOrdered = function insertOrdered<T>(
-    this: Array<T>,
-    value: T,
-    cmp: OrderFn<T>,
-    duplicates: "low" | "high" = "high"
-): Array<T> {
-    return this.insert(value, (duplicates === "low" ? bisectLow : bisectHigh)(cmp, this, value));
-};
-
-Array.prototype.present = function present<T>(this: Array<T>): Array<Present<T>> {
-    return this.filter((value: T): value is Present<T> => value !== undefined);
-};
-
-Array.prototype.nonNullable = function nonNullable<T>(this: Array<T>): Array<NonNullable<T>> {
-    return this.filter((value: T): value is NonNullable<T> => value !== undefined);
-};
-
-Array.prototype.get = function get<T>(this: Array<T>, index: number): Option<T> {
-    return Object.get(this, index);
-};
+Object.defineProperties(Array.prototype, {
+    remove: {
+        enumerable: false,
+        get() {
+            return function remove<T>(this: Array<T>, value: T): Option<T> {
+                return this.removeIndex(this.indexOf(value));
+            };
+        },
+    },
+    removeFn: {
+        enumerable: false,
+        get() {
+            return function removeFn<T>(
+                this: Array<T>,
+                predicate: (value: T, index: number, obj: Array<T>) => boolean
+            ): Option<T> {
+                return this.removeIndex(this.findIndex(predicate as () => boolean));
+            };
+        },
+    },
+    removeIndex: {
+        enumerable: false,
+        get() {
+            return function removeIndex<T>(this: Array<T>, index: number): Option<T> {
+                if (!Number.isInteger(index)) {
+                    throw new TypeError(`Array.removeIndex(): index ${index} is not an integer`);
+                }
+                if (index < 0 || index >= this.length) {
+                    return None;
+                }
+                const removed = this.splice(index, 1).pop();
+                return Option.from(removed);
+            };
+        },
+    },
+    insert: {
+        enumerable: false,
+        get() {
+            return function insert<T>(this: Array<T>, value: T, index: number): Array<T> {
+                if (!Number.isInteger(index)) {
+                    throw new TypeError(`Array.insert(): index ${index} is not an integer`);
+                }
+                if (index > this.length || index < 0) {
+                    throw new RangeError(`Array.insert: index ${index} out of bounds`);
+                }
+                this.splice(index, 0, value);
+                return this;
+            };
+        },
+    },
+    insertOrdered: {
+        enumerable: false,
+        get() {
+            return function insertOrdered<T>(
+                this: Array<T>,
+                value: T,
+                cmp: OrderFn<T>,
+                duplicates: "low" | "high" = "high"
+            ): Array<T> {
+                return this.insert(
+                    value,
+                    (duplicates === "low" ? bisectLow : bisectHigh)(cmp, this, value)
+                );
+            };
+        },
+    },
+    present: {
+        enumerable: false,
+        get() {
+            return function present<T>(this: Array<T>): Array<Present<T>> {
+                return this.filter((value: T): value is Present<T> => value !== undefined);
+            };
+        },
+    },
+    nonNullable: {
+        enumerable: false,
+        get() {
+            return function nonNullable<T>(this: Array<T>): Array<NonNullable<T>> {
+                return this.filter((value: T): value is NonNullable<T> => value !== undefined);
+            };
+        },
+    },
+    get: {
+        enumerable: false,
+        get() {
+            return function get<T>(this: Array<T>, index: number): Option<T> {
+                return Object.get(this, index);
+            };
+        },
+    },
+});
 
 // Iterator
 
