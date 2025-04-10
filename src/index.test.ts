@@ -124,3 +124,8 @@ test("Array methods are non-enumerable", () => {
     }
     expect(keys).deep.equal(["0", "1", "2", "3", "4"]);
 });
+
+test("Iterator.concat", () => {
+    const iter = Iterator.concat([1, 2, 3], [], [4, 5], [], [6]);
+    expect(iter.toArray()).deep.equals([1, 2, 3, 4, 5, 6]);
+});

@@ -101,6 +101,11 @@ declare global {
          * Construct an empty iterator.
          */
         empty<T>(): IteratorObject<T>;
+        /**
+         * Sequence multiple iterators into a single one.
+         * {@see https://github.com/tc39/proposal-iterator-sequencing}
+         */
+        concat<T>(...inputs: Array<Iterable<T>>): IteratorObject<T>;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -280,6 +285,31 @@ Object.defineProperties(Array.prototype, {
 
 Iterator.empty = function empty<T>(): IteratorObject<T> {
     return Iterator.from([]);
+};
+
+Iterator.concat = function concat<T>(...inputs: Array<Iterable<T>>): IteratorObject<T> {
+    if (inputs.length === 0) {
+        return Iterator.empty();
+    }
+    let iter: Iterator<T> = inputs[0][Symbol.iterator]();
+    let index = 0;
+    let done = false;
+    return Iterator.from({
+        next(): IteratorResult<T, undefined> {
+            if (!done) {
+                let result = iter.next();
+                while (result.done === true && index < inputs.length - 1) {
+                    iter = inputs[++index][Symbol.iterator]();
+                    result = iter.next();
+                }
+                if (result.done !== true) {
+                    return result;
+                }
+            }
+            done = true;
+            return { done: true, value: undefined };
+        },
+    });
 };
 
 Iterator.prototype.takeOne = function takeOne<T>(this: Iterator<T>): Option<T> {

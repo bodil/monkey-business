@@ -31,20 +31,20 @@
         "prepublish": "tsc"
     },
     "dependencies": {
-        "@bodil/core": "^0.1.0",
+        "@bodil/core": "^0.1.2",
         "@bodil/opt": "^0.2.6"
     },
     "devDependencies": {
         "@bodil/opt-vitest": "^1.0.0",
-        "@eslint/eslintrc": "^3.2.0",
-        "@eslint/js": "^9.18.0",
-        "@typescript-eslint/eslint-plugin": "^8.21.0",
-        "@typescript-eslint/parser": "^8.21.0",
-        "eslint": "^9.18.0",
-        "eslint-config-prettier": "^10.0.1",
-        "eslint-plugin-jsdoc": "^50.6.2",
-        "globals": "^15.14.0",
-        "typescript": "^5.7.3",
-        "vitest": "^3.0.2"
+        "@eslint/eslintrc": "^3.3.1",
+        "@eslint/js": "^9.24.0",
+        "@typescript-eslint/eslint-plugin": "^8.29.1",
+        "@typescript-eslint/parser": "^8.29.1",
+        "eslint": "^9.24.0",
+        "eslint-config-prettier": "^10.1.1",
+        "eslint-plugin-jsdoc": "^50.6.9",
+        "globals": "^15.15.0",
+        "typescript": "^5.8.3",
+        "vitest": "^3.1.1"
     }
 }
