@@ -25,6 +25,10 @@ declare global {
         ): Record<string, B>;
     }
 
+    interface ErrorConstructor {
+        isError(value: unknown): value is Error;
+    }
+
     interface Map<K, V> {
         /**
          * If `key` exists in the map, return the value associated with it.
@@ -169,6 +173,25 @@ Object.mapEntries = function mapEntries<A, B>(
     fn: (entry: [key: string, value: A]) => [string, B]
 ): Record<string, B> {
     return Object.fromEntries(Object.entries(obj).map(fn));
+};
+
+// Error
+
+Error.isError ??= function isError(value: unknown): value is Error {
+    if (!value || (typeof value !== "object" && typeof value !== "function")) {
+        return false;
+    }
+
+    if (value instanceof Error || value instanceof DOMException) {
+        return true;
+    }
+
+    try {
+        const clone = structuredClone(value);
+        return clone instanceof Error || clone instanceof DOMException;
+    } catch (e) {
+        return false;
+    }
 };
 
 // Map

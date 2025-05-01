@@ -86,7 +86,7 @@ test("Array.filterPresent", () => {
     expect(array.some((v) => v === undefined)).toBeTruthy();
     expect(cleanArray.some((v) => v === undefined)).toBeFalsy();
     expect(cleanArray).toEqual([1, 2, 3, 4]);
-    expectTypeOf(cleanArray).toMatchTypeOf<Array<number>>();
+    expectTypeOf(cleanArray).toExtend<Array<number>>();
 });
 
 test("Iterator.partition", () => {
@@ -128,4 +128,13 @@ test("Array methods are non-enumerable", () => {
 test("Iterator.concat", () => {
     const iter = Iterator.concat([1, 2, 3], [], [4, 5], [], [6]);
     expect(iter.toArray()).deep.equals([1, 2, 3, 4, 5, 6]);
+});
+
+test("Error.isError", () => {
+    const err = new TypeError("welp");
+    expect(Error.isError(err)).true;
+    const domX = new DOMException("welp");
+    expect(Error.isError(domX)).true;
+    const notErr = new Event("welp");
+    expect(Error.isError(notErr)).false;
 });
